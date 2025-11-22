@@ -3,6 +3,7 @@ import bodyParser from 'body-parser';
 import jwt from 'jsonwebtoken';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
+import cors from 'cors';
 
 import userRouter from './routers/userRouter.js';
 import productRouter from './routers/productRouter.js';
@@ -11,6 +12,7 @@ import orderRouter from './routers/orderRouter.js';
 
 let app = express();
 dotenv.config();
+app.use(cors());
 
 
 mongoose.connect(process.env.MONGO_URL).then(

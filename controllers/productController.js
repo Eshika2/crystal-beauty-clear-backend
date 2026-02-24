@@ -17,6 +17,8 @@ export async function createProduct(req, res) {
 
     const product = new Product(req.body);
 
+    // console.log(product);
+
     // product.save().then(() => {
     //     res.status(201).json({
     //         message: "Product created successfully"
@@ -34,7 +36,7 @@ export async function createProduct(req, res) {
             message: "Product created successfully"
         })
     } catch (err) {
-        // console.log(err);
+        console.log(err);
         res.status(500).json({
             message: "Product not created"
         })

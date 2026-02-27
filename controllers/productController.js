@@ -43,7 +43,7 @@ export async function createProduct(req, res) {
     }
 }
 
-export function getProducts(req, res) {
+export function getAllProducts(req, res) {
     Product.find().then((products) => {
         res.status(200).json({
             message: "Products fetched successfully",
@@ -55,6 +55,32 @@ export function getProducts(req, res) {
             message: "Products fetched failed"
         })
     })
+}
+
+export async function getProductById(req, res) {
+    try {
+        const productId = req.params.productId;
+
+        const product = await Product.findOne({productId : productId});
+
+        // console.log(product);
+
+        if (product == null) {
+            res.status(404).json({
+                message: "Product not found"
+            })
+            return
+        }
+        res.status(200).json({
+            message: "Product fetched successfully",
+            product: product
+        })
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({
+            message: "Product fetched failed"
+        })
+    }
 }
 
 export function deleteProduct(req, res) {

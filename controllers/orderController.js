@@ -1,6 +1,7 @@
 import Order from "../models/order.js";
+import Product from "../models/product.js";
 
-export function createOrder(req, res) {
+export async function createOrder(req, res) {
     if (req.user == null) {
         res.status(401).json({
             message: "You are not logged in"
@@ -24,7 +25,7 @@ export function createOrder(req, res) {
             orderID : -1
         })
         .limit(1)
-        .then((lastBills) => {
+        .then(async (lastBills) => {
             if (lastBills.length == 0) {
                 orderData.orderID = "ORD0001";
             } else {
@@ -38,8 +39,28 @@ export function createOrder(req, res) {
             }
 
             for (let i = 0; i < body.billItems.length; i++) {
-                const billItem = body.billItems[i];
+                const product = await Product.findOne({
+                    productId : body.billItems[i].productId
+                });
                 
+                if (product == null) {
+                    res.status(404).json({
+                        message: "Product with Product ID " + body.billItems[i].productId + " not found"
+                    })
+                    return
+                }
+
+                // console.log(product);
+                
+                orderData.billItems[i] = {
+                    productId : product.productId,
+                    productName : product.productName,
+                    price : product.price,
+                    image : product.image,
+                    quantity : body.billItems[i].quantity
+                }
+
+                orderData.total = orderData.total + (product.price * body.billItems[i].quantity);
 
             }
 
